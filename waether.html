@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informasi Cuaca</title>
+</head>
+<body>
+    <div>
+        <h1><b>Informasi Cuaca Kota</b></h1>
+        <input type="text" id="location" placeholder="Lokasi">
+        <button id="get-weather-btn">Tampilkan Cuaca</button>
+        <div id="weather">
+           <p id="temperature"></p>
+           <p id="humidity"></p>
+           <p id="wind"></p>
+           <img id="icon-weather" scr="" alt=""></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            async function getWeather() {
+                const location = document.getElementById('location').value;
+                const apiKey = 'b892a4e560ea47c3b9152442240608';
+
+                if (!location) {
+                    alert("Mohon masukkan lokasi!");
+                    return;
+                }
+            
+                try {
+                    const response = await fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}`);
+                    if (!response.ok) {
+                        const message = `An error has occurred: ${response.status}`;
+                        throw new Error(message);
+                    }
+                    const data = await response.json();
+                    showWeather(data);
+                } catch (error) {
+                    console.log('Error:', error);
+                    alert("Mohon maaf ada kesalahan")
+                }
+        }
+
+            function showWeather(data) {
+                console.log(data);
+                document.getElementById('temperature').innerText = `Suhu sekarang: ${data.current.temp_c} °C`;
+                document.getElementById('humidity').innerText = `Kelembaban sekarang: ${data.current.humidity} %`;
+                document.getElementById('wind').innerText = `Kecepatan angin sekarang: ${data.current.wind_kph} kph`;
+                document.getElementById('icon-weather').src = data.current.condition.icon;
+                document.getElementById('icon-weather').alt = data.current.condition.text;
+            }
+
+            document.getElementById('get-weather-btn').addEventListener('click', getWeather);
+        });
+    </script>
+</body>
+</html>
